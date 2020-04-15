@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2020 The WorkflowHub Team.
 #
@@ -13,6 +13,8 @@ import jsonschema
 import logging
 import os
 import requests
+
+__author__ = "Rafael Ferreira da Silva"
 
 logger = logging.getLogger(__name__)
 
