@@ -3,8 +3,8 @@
 # The WorkflowHub JSON Schema
 
 - Current schema version: `1.0`
-- Schema file: `workflow-schema.json`
-- Schema validator: `validator.py`
+- Schema file: `workflowhub-schema.json`
+- Schema validator: `workflowhub-validator.py` (see documentation at the end of this file)
 
 ## Documentation
 
@@ -88,3 +88,35 @@ The author property should contain the contact information about the person or t
 - [x] `email`: Author email.
 - [ ] `institution`: Author institution.
 - [ ] `country`: Author country (preferably country code, [ISO ALPHA-2 code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+
+---
+
+## Validator
+
+WorkflowHub provides a Python-based trace validator script for verifying the
+syntax of JSON trace files, as well as their semantics, e.g., whether all files
+and parents IDs refer to valid entries.
+
+**Prerequisite:** The validator script requires the Python's `jsonschema` and
+`requests` modules, which can be installed as follows:
+
+```
+$ pip install jsonschema
+$ pip install requests
+```
+
+The validator script signature is defined as follows:
+
+```
+usage: validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
+
+Validate JSON file against workflow-schema.
+
+positional arguments:
+  JSON_FILE       JSON data file
+
+optional arguments:
+  -h, --help      show this help message and exit
+  -s SCHEMA_FILE  JSON schema file
+  -d, --debug     Print debug messages to stderr
+```
