@@ -108,12 +108,12 @@ $ pip install requests
 The validator script signature is defined as follows:
 
 ```
-usage: validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
+usage: workflowhub-validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
 
-Validate JSON file against workflow-schema.
+Validate JSON file against workflowhub-schema.
 
 positional arguments:
-  JSON_FILE       JSON data file
+  JSON_FILE       JSON trace file
 
 optional arguments:
   -h, --help      show this help message and exit
