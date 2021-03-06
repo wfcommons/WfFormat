@@ -1,14 +1,14 @@
-<a href="https://workflowhub.org" target="_blank"><img src="https://workflowhub.org/assets/images/logo-horizontal.png" width="300" /></a>
+<a href="https://wfcommons.org" target="_blank"><img src="https://workflowhub.org/assets/images/logo-horizontal.png" width="300" /></a>
 
-# The WorkflowHub JSON Schema
+# The WfCommons JSON Schema
 
 - Current schema version: `1.0`
-- Schema file: `workflowhub-schema.json`
-- Schema validator: `workflowhub-validator.py` (see documentation at the end of this file)
+- Schema file: `wfcommons-schema.json`
+- Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
 ## Documentation
 
-This documentation provides an overview of the WorkflowHub JSON schema. Although this documentation attempts to cover all aspects of the schema, we strongly recommend the use of a JSON schema validator before using your own workflow execution traces or workflow descriptions. Required properties are identified with a marked checkbox symbol.
+This documentation provides an overview of the WfCommons JSON schema. Although this documentation attempts to cover all aspects of the schema, we strongly recommend the use of a JSON schema validator before using your own workflow execution traces or workflow descriptions. Required properties are identified with a marked checkbox symbol.
 
 ---
 
@@ -93,7 +93,7 @@ The author property should contain the contact information about the person or t
 
 ## Validator
 
-WorkflowHub provides a Python-based trace validator script for verifying the
+WfCommons provides a Python-based trace validator script for verifying the
 syntax of JSON trace files, as well as their semantics, e.g., whether all files
 and parents IDs refer to valid entries.
 
@@ -108,9 +108,9 @@ $ pip install requests
 The validator script signature is defined as follows:
 
 ```
-usage: workflowhub-validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
+usage: wfcommons-validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
 
-Validate JSON file against workflowhub-schema.
+Validate JSON file against wfcommons-schema.
 
 positional arguments:
   JSON_FILE       JSON trace file
