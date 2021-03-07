@@ -1,8 +1,8 @@
-<a href="https://wfcommons.org" target="_blank"><img src="https://workflowhub.org/assets/images/logo-horizontal.png" width="300" /></a>
+<a href="https://wfcommons.org" target="_blank"><img src="http://localhost:4000/images/wfcommons-horizontal.png" width="300" /></a>
 
 # The WfCommons JSON Schema
 
-- Current schema version: `1.0`
+- Current schema version: `1.1`
 - Schema file: `wfcommons-schema.json`
 - Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
