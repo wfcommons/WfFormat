@@ -1,4 +1,4 @@
-<a href="https://wfcommons.org" target="_blank"><img src="http://localhost:4000/images/wfcommons-horizontal.png" width="300" /></a>
+<a href="https://wfcommons.org" target="_blank"><img src="https://wfcommons.org/images/wfcommons-horizontal.png" width="350" /></a>
 
 # The WfCommons JSON Schema
 
