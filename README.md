@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/252368853.svg)](https://zenodo.org/badge/latestdoi/252368853)
+
+
 <a href="https://wfcommons.org" target="_blank"><img src="https://wfcommons.org/images/wfcommons-horizontal.png" width="350" /></a>
 
 # The WfCommons JSON Schema
