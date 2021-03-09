@@ -47,13 +47,13 @@ def _load_schema(schema_file):
         return json.loads(open(schema_file).read())
 
     else:
-        schema_path = os.path.dirname(os.path.abspath( __file__ )) + "/workflowhub-schema.json"
+        schema_path = os.path.dirname(os.path.abspath( __file__ )) + "/wfcommons-schema.json"
         if os.path.exists(schema_path):
             logger.debug("Using schema file: " + schema_path)
             return json.loads(open(schema_path).read())
         else:
             # fetching latest schema file from GitHub repository
-            url = 'https://raw.githubusercontent.com/workflowhub/workflow-schema/master/workflowhub-schema.json'
+            url = 'https://raw.githubusercontent.com/wfcommons/workflow-schema/master/wfcommons-schema.json'
             response = requests.get(url)
             logger.debug("Using latest schema file from GitHub repository.")
             return json.loads(response.content)
@@ -62,7 +62,7 @@ def _load_schema(schema_file):
 def _syntax_validation(schema, data):
     """
     Validate the JSON workflow execution trace agains the schema
-    :param schema: WorkflowHub JSON schema
+    :param schema: WfCommons JSON schema
     :param data: JSON trace
     """
     v = jsonschema.Draft4Validator(schema)
@@ -114,7 +114,7 @@ def _semantic_validation(data):
 
 def main():
     # Application's arguments
-    parser = argparse.ArgumentParser(description='Validate JSON file against workflowhub-schema.')
+    parser = argparse.ArgumentParser(description='Validate JSON file against wfcommons-schema.')
     parser.add_argument('-s', dest='schema_file', help='JSON schema file')
     parser.add_argument('data_file', metavar='JSON_FILE', help='JSON trace file')
     parser.add_argument('-d', '--debug', action='store_true', help='Print debug messages to stderr')
@@ -136,7 +136,7 @@ def main():
     # semantic validation
     _semantic_validation(data)
 
-    logger.info('The trace file has a valid WorkflowHub JSON trace format.')
+    logger.info('The trace file has a valid WfCommons JSON trace format.')
 
 
 if __name__ == '__main__':
