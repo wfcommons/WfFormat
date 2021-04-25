@@ -11,19 +11,19 @@
 
 ## Documentation
 
-This documentation provides an overview of the WfCommons JSON schema. Although this documentation attempts to cover all aspects of the schema, we strongly recommend the use of a JSON schema validator before using your own workflow execution traces or workflow descriptions. Required properties are identified with a marked checkbox symbol.
+This documentation provides an overview of the WfCommons JSON schema. Although this documentation attempts to cover all aspects of the schema, we strongly recommend the use of a JSON schema validator before using your own workflow execution instances or workflow descriptions. Required properties are identified with a marked checkbox symbol.
 
 ---
 
-## General Trace Properties
+## General Instance Properties
 
-- [x] `name`: Representative name for the trace name.
-- [ ] `description`: A concise description of the trace. It should aid researchers to understand the purpose of the execution.
+- [x] `name`: Representative name for the instance name.
+- [ ] `description`: A concise description of the instance. It should aid researchers to understand the purpose of the execution.
 - [ ] `createdAt`: Schema creation date in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-03-20T15:19:28-08:00`).
 - [x] `schemaVersion`: Version of the schema from an enumerate.
 - [ ] `wms`: An `object` to describe the workflow management system (WMS) used to run the workflow.
 - [x] `workflow`: An `object` to describe the workflow characteristics and performance metrics.
-- [ ] `author`: An `object` to describe the author/institution who created/generated the trace.
+- [ ] `author`: An `object` to describe the author/institution who created/generated the instance.
 
 ## WMS Property
 
@@ -35,7 +35,7 @@ The workflow management system property documents the WMS used to run the workfl
 
 ## Workflow Property
 
-The workflow property is the **core** element of the trace file. It contains the workflow structure (jobs, depenencies, and files), as well as job characteristics and performance information. It is composed by the following sub-properties:
+The workflow property is the **core** element of the instance file. It contains the workflow structure (jobs, depenencies, and files), as well as job characteristics and performance information. It is composed by the following sub-properties:
 
 - [x] `makespan`: Workflow turnaround time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
@@ -85,7 +85,7 @@ The **`cpu`** property is composed of a `count` (number of CPU cores), `speed` (
 
 ## Author Property
 
-The author property should contain the contact information about the person or team who created the trace. It is composed of the following properties:
+The author property should contain the contact information about the person or team who created the instance. It is composed of the following properties:
 
 - [x] `name`: Author name.
 - [x] `email`: Author email.
@@ -96,8 +96,8 @@ The author property should contain the contact information about the person or t
 
 ## Validator
 
-WfCommons provides a Python-based trace validator script for verifying the
-syntax of JSON trace files, as well as their semantics, e.g., whether all files
+WfCommons provides a Python-based instance validator script for verifying the
+syntax of JSON instance files, as well as their semantics, e.g., whether all files
 and parents IDs refer to valid entries.
 
 **Prerequisite:** The validator script requires the Python's `jsonschema` and
@@ -116,7 +116,7 @@ usage: wfcommons-validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
 Validate JSON file against wfcommons-schema.
 
 positional arguments:
-  JSON_FILE       JSON trace file
+  JSON_FILE       JSON instance file
 
 optional arguments:
   -h, --help      show this help message and exit
