@@ -61,9 +61,9 @@ def _load_schema(schema_file):
 
 def _syntax_validation(schema, data):
     """
-    Validate the JSON workflow execution trace agains the schema
+    Validate the JSON workflow execution instance agains the schema
     :param schema: WfCommons JSON schema
-    :param data: JSON trace
+    :param data: JSON instance
     """
     v = jsonschema.Draft4Validator(schema)
     has_error = False
@@ -79,8 +79,8 @@ def _syntax_validation(schema, data):
 
 def _semantic_validation(data):
     """
-    Validate the semantics of the JSON workflow excecution trace
-    :param data: JSON trace
+    Validate the semantics of the JSON workflow excecution instance
+    :param data: JSON instance
     """
     has_error = False
 
@@ -116,7 +116,7 @@ def main():
     # Application's arguments
     parser = argparse.ArgumentParser(description='Validate JSON file against wfcommons-schema.')
     parser.add_argument('-s', dest='schema_file', help='JSON schema file')
-    parser.add_argument('data_file', metavar='JSON_FILE', help='JSON trace file')
+    parser.add_argument('data_file', metavar='JSON_FILE', help='JSON instance file')
     parser.add_argument('-d', '--debug', action='store_true', help='Print debug messages to stderr')
     args = parser.parse_args()
 
@@ -128,7 +128,7 @@ def main():
 
     # read data file
     data = json.loads(open(args.data_file).read())
-    logger.debug("Trace file been evaluated: " + args.data_file)
+    logger.debug("Instance file been evaluated: " + args.data_file)
 
     # validate against schema
     _syntax_validation(schema, data)
@@ -136,7 +136,7 @@ def main():
     # semantic validation
     _semantic_validation(data)
 
-    logger.info('The trace file has a valid WfCommons JSON trace format.')
+    logger.info('The instance file has a valid WfCommons JSON instance format.')
 
 
 if __name__ == '__main__':
