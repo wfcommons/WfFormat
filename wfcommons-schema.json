@@ -4,17 +4,17 @@
   "title": "WfFormat",
   "properties": {
     "name": {
-      "description": "Workflow trace name",
+      "description": "Workflow instance name",
       "type": "string",
       "minLength": 1
     },
     "description": {
-      "description": "General description of the trace",
+      "description": "General description of the instance",
       "type": "string",
       "minLength": 1
     },
     "createdAt": {
-      "description": "Trace creation timestamp",
+      "description": "Instance creation timestamp",
       "type": "string",
       "minLength": 1,
       "format": "date-time"
