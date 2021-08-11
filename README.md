@@ -52,7 +52,7 @@ This property lists all jobs of the workflow describing their characteristics an
 - [ ] `parents`: List of parent jobs (reference to other workflow jobs, i.e. `name` property above).
 - [ ] `files`: Sets of input/output data.
 - [x] `runtime`: Job runtime in _seconds_.
-- [ ] `cores`: Number of cores required by the job.
+- [ ] `cores`: Number of cores required by the job (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `bytesRead`: Total bytes read in KB.
 - [ ] `bytesWritten`: Total bytes written in KB.
