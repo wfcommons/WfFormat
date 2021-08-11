@@ -172,6 +172,16 @@
                 "type": "string",
                 "minLength": 1
               },
+              "id": {
+                "description": "Job ID",
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "description": "Job category",
+                "type": "string",
+                "minLength": 1
+              },
               "type": {
                 "description": "Job type (whether it is a compute or an auxiliary job)",
                 "type": "string",

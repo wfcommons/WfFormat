@@ -46,7 +46,9 @@ The workflow property is the **core** element of the instance file. It contains 
 
 This property lists all jobs of the workflow describing their characteristics and performance metrics. Each job is described as an `object` property and is composed of 15 properties:
 
-- [x] `name`: Job ID or name.
+- [x] `name`: Full job ID or name (to be used as references in child/parent jobs).
+- [ ] `id`: Job unique ID (e.g., ID0000001).
+- [ ] `category`: Job category (can be used, for example, to define jobs that use the same program).
 - [x] `type`: Job type (whether it is a `compute`, `transfer`, or an `auxiliary` job).
 - [ ] `command`: Job command description.
 - [ ] `parents`: List of parent jobs (reference to other workflow jobs, i.e. `name` property above).
