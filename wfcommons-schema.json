@@ -24,7 +24,8 @@
       "type": "string",
       "enum": [
         "1.0",
-        "1.1"
+        "1.1",
+        "1.2"
       ]
     },
     "wms": {
@@ -138,8 +139,8 @@
                 "properties": {
                   "count": {
                     "description": "Number of CPU cores",
-                    "type": "integer",
-                    "minimum": 1
+                    "type": "number",
+                    "minimum": 0
                   },
                   "speed": {
                     "description": "CPU speed in MHz",

@@ -81,7 +81,7 @@ The machines property lists all different machines that were used for workflow j
 - [ ] `memory`: Total RAM memory in KB.
 - [ ] `cpu`: An `object` to describe the machine's CPU information.
 
-The **`cpu`** property is composed of a `count` (number of CPU cores), `speed` (CPU speed in MHz), and `vendor` (CPU vendor) properties.
+The **`cpu`** property is composed of a `count` (number of CPU cores - supports fractions of cores expressed as float numbers), `speed` (CPU speed in MHz), and `vendor` (CPU vendor) properties.
 
 ## Author Property
 
