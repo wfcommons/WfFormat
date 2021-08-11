@@ -181,13 +181,24 @@
                   "auxiliary"
                 ]
               },
-              "arguments": {
-                "description": "Sets of job arguments",
-                "type": "array",
-                "items": {
-                  "description": "A job argument",
-                  "type": "string",
-                  "minLength": 1
+              "command": {
+                "description": "Job command description",
+                "type": "object",
+                "properties": {
+                  "program": {
+                    "description": "Program name",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "arguments": {
+                    "description": "Sets of job arguments",
+                    "type": "array",
+                    "items": {
+                      "description": "A job argument",
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
                 }
               },
               "parents": {

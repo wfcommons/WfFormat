@@ -48,7 +48,7 @@ This property lists all jobs of the workflow describing their characteristics an
 
 - [x] `name`: Job ID or name.
 - [x] `type`: Job type (whether it is a `compute`, `transfer`, or an `auxiliary` job).
-- [ ] `arguments`: List of job arguments.
+- [ ] `command`: Job command description.
 - [ ] `parents`: List of parent jobs (reference to other workflow jobs, i.e. `name` property above).
 - [ ] `files`: Sets of input/output data.
 - [x] `runtime`: Job runtime in _seconds_.
@@ -61,6 +61,13 @@ This property lists all jobs of the workflow describing their characteristics an
 - [ ] `avgPower`: Average power consumption in W.
 - [ ] `priority`: Job priority as an _integer_ value.
 - [ ] `machine`: Node name of machine on which the job was run.
+
+#### Command Property
+
+The command property describes the program and arguments used by a job. The `command` is listed as an `object` property, and is composed of the following properties:
+
+- [ ] `program`: Program name.
+- [ ] `arguments`: List of job arguments.
 
 #### Files Property
 
