@@ -5,7 +5,7 @@
 
 # The WfCommons JSON Schema
 
-- Current schema version: `1.1`
+- Current schema version: `1.2`
 - Schema file: `wfcommons-schema.json`
 - Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
