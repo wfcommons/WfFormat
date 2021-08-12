@@ -3,7 +3,7 @@
 
 <a href="https://wfcommons.org" target="_blank"><img src="https://wfcommons.org/images/wfcommons-horizontal.png" width="350" /></a>
 
-# The WfCommons JSON Schema
+# WfFormat: The WfCommons JSON Schema
 
 - Current schema version: `1.2`
 - Schema file: `wfcommons-schema.json`
