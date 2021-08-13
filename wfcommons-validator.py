@@ -61,7 +61,7 @@ def _load_schema(schema_file):
 
 def _syntax_validation(schema, data):
     """
-    Validate the JSON workflow execution instance agains the schema
+    Validate the JSON workflow execution instance against the schema
     :param schema: WfCommons JSON schema
     :param data: JSON instance
     """
@@ -79,7 +79,7 @@ def _syntax_validation(schema, data):
 
 def _semantic_validation(data):
     """
-    Validate the semantics of the JSON workflow excecution instance
+    Validate the semantics of the JSON workflow execution instance
     :param data: JSON instance
     """
     has_error = False
