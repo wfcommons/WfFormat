@@ -70,6 +70,7 @@ def _migrate_to_12(data):
     """
     data['schemaVersion'] = "1.2"
     task_id_counter = 0
+    task_name_map = {}
 
     for task in data['workflow']['jobs']:
         # update task id and category
@@ -81,7 +82,9 @@ def _migrate_to_12(data):
             task_name = task['name'].split('_')
             task_id_counter += 1
             task_id = 'ID{:07d}'.format(task_id_counter)
-            task['name'] = '{}_{}'.format(task['name'], task_id)
+            task_new_name = '{}_{}'.format(task['name'], task_id)
+            task_name_map[task['name']] = task_new_name
+            task['name'] = task_new_name
             task['id'] = task_id
             task['category'] = task_name[0]
 
@@ -91,6 +94,12 @@ def _migrate_to_12(data):
             'arguments': task['arguments'] if 'arguments' in task else []
         }
         task.pop('arguments', None)
+
+    if len(task_name_map) > 0:
+        for task in data['workflow']['jobs']:
+            for i in range(len(task['parents'])):
+                if task['parents'][i] in task_name_map:
+                    task['parents'][i] = task_name_map[task['parents'][i]]
 
     return data
 
