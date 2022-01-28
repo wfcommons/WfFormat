@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2021 The WfCommons Team.
+# Copyright (c) 2021-2022 The WfCommons Team.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@ logger = logging.getLogger(__name__)
 
 SUPPORTED_VERSIONS = [
     "1.0",
-    "1.1"
+    "1.1",
+    "1.2"
 ]
-LATEST_VERSION = "1.2"
+LATEST_VERSION = "1.3"
 
 
 def _configure_logging(debug):
@@ -47,18 +48,22 @@ def _process_instance(instance_file, schema_version):
     """
     data = json.loads(open(instance_file).read())
 
-    if data['schemaVersion'] not in SUPPORTED_VERSIONS:
-        logger.warning('Unable to migrate from version {}: {}'.format(data['schemaVersion'], instance_file))
+    if data["schemaVersion"] not in SUPPORTED_VERSIONS:
+        logger.warning(f"Unable to migrate from version {data['schemaVersion']}: {instance_file}")
         return
 
     # from 1.0 or 1.1 to 1.2
-    if data['schemaVersion'] == "1.0" or data['schemaVersion'] == "1.1":
-        logger.debug('Migration to version 1.2: {}'.format(instance_file))
+    if data["schemaVersion"] == "1.0" or data["schemaVersion"] == "1.1":
+        logger.debug(f"Migration to version 1.2: {instance_file}")
         data = _migrate_to_12(data)
+        data = _migrate_to_13(data)
+    
+    elif data["schemaVersion"] == "1.2":
+        data = _migrate_to_13(data)
 
     # write output file
-    with open(instance_file, 'w') as outfile:
-        logger.debug('Writing migrated instance to: {}'.format(instance_file))
+    with open(instance_file, "w") as outfile:
+        logger.debug(f"Writing migrated instance to: {instance_file}")
         outfile.write(json.dumps(data, indent=4))
 
 
@@ -68,7 +73,7 @@ def _migrate_to_12(data):
     :param data: instance data dictionary
     :return: instance data dictionary in the migrated form
     """
-    data['schemaVersion'] = "1.2"
+    data["schemaVersion"] = "1.2"
     task_id_counter = 0
     task_name_map = {}
 
@@ -76,13 +81,13 @@ def _migrate_to_12(data):
         # update task id and category
         if '_ID' in task['name']:
             task_name = task['name'].split('_ID')
-            task['id'] = 'ID{}'.format(task_name[1])
+            task['id'] = f"ID{task_name[1]}"
             task['category'] = task_name[0]
         else:
             task_name = task['name'].split('_')
             task_id_counter += 1
-            task_id = 'ID{:07d}'.format(task_id_counter)
-            task_new_name = '{}_{}'.format(task['name'], task_id)
+            task_id = f"ID{task_id_counter:07d}"
+            task_new_name = f"{task['name']}_{task_id}"
             task_name_map[task['name']] = task_new_name
             task['name'] = task_new_name
             task['id'] = task_id
@@ -104,11 +109,26 @@ def _migrate_to_12(data):
     return data
 
 
+def _migrate_to_13(data):
+    """
+    Migrate instance data from version 1.2 to 1.3.
+    :param data: instance data dictionary
+    :return: instance data dictionary in the migrated form
+    """
+    data["schemaVersion"] = "1.3"
+    data["workflow"]["tasks"] = []
+
+    for task in data["workflow"]["jobs"]:
+        data["workflow"]["tasks"].append(task)
+
+    data["workflow"].pop("jobs", None)
+
+    return data
+
+
 def main():
     # Application's arguments
-    parser = argparse.ArgumentParser(description='Migrate WfCommons Instances.')
-    parser.add_argument('-s', dest='schema_version', default=LATEST_VERSION,
-                        help='Migrate to a specific schema version')
+    parser = argparse.ArgumentParser(description="Migrate WfCommons Instances to latest WfFormat version.")
     parser.add_argument('instance', metavar='INSTANCE_FILE_OR_FOLDER',
                         help='JSON instance file or folder with instances')
     parser.add_argument('-d', '--debug', action='store_true', help='Print debug messages to stderr')
@@ -117,7 +137,7 @@ def main():
     # Configure logging
     _configure_logging(args.debug)
 
-    logger.info('Migrating instance file(s) to version {}.'.format(args.schema_version))
+    logger.info(f"Migrating instance file(s) to version {LATEST_VERSION}.")
 
     # process instance(s)
     counter = 0
@@ -125,14 +145,14 @@ def main():
         for root, dirs, files in os.walk(args.instance):
             for f in files:
                 if f.endswith(".json"):
-                    _process_instance(os.path.join(root, f), args.schema_version)
+                    _process_instance(os.path.join(root, f), LATEST_VERSION)
                     counter += 1
     else:
         _process_instance(args.instance, args.schema_version)
         counter = 1
 
-    logger.info('Successfully migrated {} instance file(s).'.format(counter))
+    logger.info(f"Successfully migrated {counter} instance file(s).")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

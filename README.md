@@ -5,7 +5,7 @@
 
 # WfFormat: The WfCommons JSON Schema
 
-- Current schema version: `1.2`
+- Current schema version: `1.3`
 - Schema file: `wfcommons-schema.json`
 - Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
@@ -35,41 +35,41 @@ The workflow management system property documents the WMS used to run the workfl
 
 ## Workflow Property
 
-The workflow property is the **core** element of the instance file. It contains the workflow structure (jobs, depenencies, and files), as well as job characteristics and performance information. It is composed by the following sub-properties:
+The workflow property is the **core** element of the instance file. It contains the workflow structure (tasks, depenencies, and files), as well as task characteristics and performance information. It is composed by the following sub-properties:
 
 - [x] `makespan`: Workflow turnaround time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
-- [x] `jobs`: Sets of workflow jobs.
-- [ ] `machines`: Sets of compute machines used for running the workflow jobs.
+- [x] `tasks`: Sets of workflow tasks.
+- [ ] `machines`: Sets of compute machines used for running the workflow tasks.
 
-### Jobs Property
+### Tasks Property
 
-This property lists all jobs of the workflow describing their characteristics and performance metrics. Each job is described as an `object` property and is composed of 15 properties:
+This property lists all tasks of the workflow describing their characteristics and performance metrics. Each task is described as an `object` property and is composed of 15 properties:
 
-- [x] `name`: Full job ID or name (to be used as references in child/parent jobs).
-- [ ] `id`: Job unique ID (e.g., ID0000001).
-- [ ] `category`: Job category (can be used, for example, to define jobs that use the same program).
-- [x] `type`: Job type (whether it is a `compute`, `transfer`, or an `auxiliary` job).
-- [ ] `command`: Job command description.
-- [ ] `parents`: List of parent jobs (reference to other workflow jobs, i.e. `name` property above).
+- [x] `name`: Full task ID or name (to be used as references in child/parent tasks).
+- [ ] `id`: Task unique ID (e.g., ID0000001).
+- [ ] `category`: Task category (can be used, for example, to define tasks that use the same program).
+- [x] `type`: Task type (whether it is a `compute`, `transfer`, or an `auxiliary` task).
+- [ ] `command`: Task command description.
+- [ ] `parents`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
 - [ ] `files`: Sets of input/output data.
-- [x] `runtime`: Job runtime in _seconds_.
-- [ ] `cores`: Number of cores required by the job (e.g., `1.5`).
+- [ ] `runtime`: Task runtime in _seconds_.
+- [ ] `cores`: Number of cores required by the task (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `bytesRead`: Total bytes read in KB.
 - [ ] `bytesWritten`: Total bytes written in KB.
 - [ ] `memory`: Memory (resident set) size of the process in KB.
 - [ ] `energy`: Total energy consumption in kWh.
 - [ ] `avgPower`: Average power consumption in W.
-- [ ] `priority`: Job priority as an _integer_ value.
-- [ ] `machine`: Node name of machine on which the job was run.
+- [ ] `priority`: Task priority as an _integer_ value.
+- [ ] `machine`: Node name of machine on which the task was run.
 
 #### Command Property
 
-The command property describes the program and arguments used by a job. The `command` is listed as an `object` property, and is composed of the following properties:
+The command property describes the program and arguments used by a task. The `command` is listed as an `object` property, and is composed of the following properties:
 
 - [ ] `program`: Program name.
-- [ ] `arguments`: List of job arguments.
+- [ ] `arguments`: List of task arguments.
 
 #### Files Property
 
@@ -81,7 +81,7 @@ The files property lists all files used throughout the workflow execution. Each 
 
 #### Machines Property
 
-The machines property lists all different machines that were used for workflow jobs execution. It is composed of the following properties:
+The machines property lists all different machines that were used for workflow tasks execution. It is composed of the following properties:
 
 - [ ] `system`: Machine system (`linux`, `macos`, `windows`).
 - [ ] `architecture`: Machine architecture (e.g., `x86_64`).

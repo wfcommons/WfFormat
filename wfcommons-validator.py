@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2020-2021 The WfCommons Team.
+# Copyright (c) 2020-2022 The WfCommons Team.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,17 +43,17 @@ def _load_schema(schema_file):
     """
     if schema_file:
         # schema file provided
-        logger.debug("Using schema file: " + schema_file)
+        logger.debug(f"Using schema file: {schema_file}")
         return json.loads(open(schema_file).read())
 
     else:
         schema_path = os.path.dirname(os.path.abspath( __file__ )) + "/wfcommons-schema.json"
         if os.path.exists(schema_path):
-            logger.debug("Using schema file: " + schema_path)
+            logger.debug(f"Using schema file: {schema_path}")
             return json.loads(open(schema_path).read())
         else:
             # fetching latest schema file from GitHub repository
-            url = 'https://raw.githubusercontent.com/wfcommons/workflow-schema/master/wfcommons-schema.json'
+            url = "https://raw.githubusercontent.com/wfcommons/workflow-schema/master/wfcommons-schema.json"
             response = requests.get(url)
             logger.debug("Using latest schema file from GitHub repository.")
             return json.loads(response.content)
@@ -68,8 +68,8 @@ def _syntax_validation(schema, data):
     v = jsonschema.Draft4Validator(schema)
     has_error = False
     for error in sorted(v.iter_errors(data), key=str):
-        msg = ' > '.join([str(e) for e in error.relative_path]) \
-              + ': ' + error.message
+        msg = " > ".join([str(e) for e in error.relative_path]) \
+              + ": " + error.message
         logger.error(msg)
         has_error = True
 
@@ -91,21 +91,21 @@ def _semantic_validation(data):
     else:
         logger.debug('Skipping machines processing.')
 
-    job_ids = []
-    for j in data['workflow']['jobs']:
-        job_ids.append(j['name'])
+    task_ids = []
+    for j in data['workflow']['tasks']:
+        task_ids.append(j['name'])
         if 'machine' in j and j['machine'] not in machine_ids:
-            logger.error('Machine "%s" is not declared in the list of machines.' % j['machine'])
+            logger.error(f"Machine '{j['machine']}' is not declared in the list of machines.")
             has_error = True
 
-    # since jobs may be declared out of order, their dependencies are only verified here
-    for j in data['workflow']['jobs']:
+    # since tasks may be declared out of order, their dependencies are only verified here
+    for j in data['workflow']['tasks']:
         for p in j['parents']:
-            if p not in job_ids:
-                logger.error('Parent job "%s" is not declared in the list of workflow jobs.' % p['parentId'])
+            if p not in task_ids:
+                logger.error(f"Parent task '{p['parentId']}' is not declared in the list of workflow tasks.")
                 has_error = True
 
-    logger.debug('The workflow has %d jobs.' % len(job_ids))
+    logger.debug('The workflow has %d tasks.' % len(task_ids))
     logger.debug('The workflow has %d machines.' % len(machine_ids))
 
     if has_error:
@@ -136,8 +136,8 @@ def main():
     # semantic validation
     _semantic_validation(data)
 
-    logger.info('The instance file has a valid WfCommons JSON instance format.')
+    logger.info("The instance file has a valid WfCommons JSON instance format.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
