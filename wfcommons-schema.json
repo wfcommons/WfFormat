@@ -306,7 +306,7 @@
         }
       },
       "required": [
-        "makespan",
+        "makespanInSeconds",
         "executedAt",
         "tasks"
       ]
