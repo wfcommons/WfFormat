@@ -5,7 +5,7 @@
 
 # WfFormat: The WfCommons JSON Schema
 
-- Current schema version: `1.3`
+- Current schema version: `1.4`
 - Schema file: `wfcommons-schema.json`
 - Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
@@ -37,7 +37,7 @@ The workflow management system property documents the WMS used to run the workfl
 
 The workflow property is the **core** element of the instance file. It contains the workflow structure (tasks, depenencies, and files), as well as task characteristics and performance information. It is composed by the following sub-properties:
 
-- [x] `makespan`: Workflow turnaround time in _seconds_.
+- [x] `makespanInSeconds`: Workflow turnaround time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
 - [x] `tasks`: Sets of workflow tasks.
 - [ ] `machines`: Sets of compute machines used for running the workflow tasks.
@@ -53,12 +53,12 @@ This property lists all tasks of the workflow describing their characteristics a
 - [ ] `command`: Task command description.
 - [ ] `parents`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
 - [ ] `files`: Sets of input/output data.
-- [ ] `runtime`: Task runtime in _seconds_.
+- [ ] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `cores`: Number of cores required by the task (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
-- [ ] `bytesRead`: Total bytes read in KB.
-- [ ] `bytesWritten`: Total bytes written in KB.
-- [ ] `memory`: Memory (resident set) size of the process in KB.
+- [ ] `readBytes`: Total bytes read.
+- [ ] `writtenBytes`: Total bytes written.
+- [ ] `memoryInBytes`: Memory (resident set) size of the process in bytes.
 - [ ] `energy`: Total energy consumption in kWh.
 - [ ] `avgPower`: Average power consumption in W.
 - [ ] `priority`: Task priority as an _integer_ value.
@@ -76,7 +76,7 @@ The command property describes the program and arguments used by a task. The `co
 The files property lists all files used throughout the workflow execution. Each `file` is listed as an `object` property, and is composed of the following properties:
 
 - [x] `name`: A human-readable _unique_ name for the file.
-- [x] `size`: File size in KB.
+- [x] `sizeInBytes`: File size in bytes.
 - [x] `link`: Whether it is an `input` or `output` data.
 
 #### Machines Property
@@ -87,7 +87,7 @@ The machines property lists all different machines that were used for workflow t
 - [ ] `architecture`: Machine architecture (e.g., `x86_64`).
 - [x] `nodeName`: Machine node name.
 - [ ] `release`: Machine release.
-- [ ] `memory`: Total RAM memory in KB.
+- [ ] `memoryInBytes`: Total RAM memory in bytes.
 - [ ] `cpu`: An `object` to describe the machine's CPU information.
 
 The **`cpu`** property is composed of a `count` (number of CPU cores - supports fractions of cores expressed as float numbers), `speed` (CPU speed in MHz), and `vendor` (CPU vendor) properties.

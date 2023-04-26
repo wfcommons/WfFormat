@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2021-2022 The WfCommons Team.
+# Copyright (c) 2021-2023 The WfCommons Team.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,10 @@ logger = logging.getLogger(__name__)
 SUPPORTED_VERSIONS = [
     "1.0",
     "1.1",
-    "1.2"
+    "1.2",
+    "1.3"
 ]
-LATEST_VERSION = "1.3"
+LATEST_VERSION = "1.4"
 
 
 def _configure_logging(debug):
@@ -58,8 +59,13 @@ def _process_instance(instance_file, schema_version):
         data = _migrate_to_12(data)
         data = _migrate_to_13(data)
     
-    elif data["schemaVersion"] == "1.2":
+    if data["schemaVersion"] == "1.2":
+        logger.debug(f"Migration to version 1.3: {instance_file}")
         data = _migrate_to_13(data)
+
+    if data["schemaVersion"] == "1.3":
+        logger.debug(f"Migration to version 1.4: {instance_file}")
+        data = _migrate_to_14(data)
 
     # write output file
     with open(instance_file, "w") as outfile:
@@ -122,6 +128,39 @@ def _migrate_to_13(data):
         data["workflow"]["tasks"].append(task)
 
     data["workflow"].pop("jobs", None)
+
+    return data
+
+
+def _migrate_to_14(data):
+    """
+    Migrate instance data from version 1.2 to 1.3.
+    :param data: instance data dictionary
+    :return: instance data dictionary in the migrated form
+    """
+    data["schemaVersion"] = "1.4"
+
+    data["workflow"]["makespanInSeconds"] = data["workflow"]["makespan"]
+    data["workflow"].pop("makespan", None)
+    
+    for machine in data["workflow"]["machines"]:
+        machine["memoryInBytes"] = machine["memory"] * 1000
+        machine.pop("memory", None)
+
+    for task in data["workflow"]["tasks"]:
+        task["runtimeInSeconds"] = task["runtime"]
+        task.pop("runtime", None)
+
+        if "bytesRead" in task:
+            task["readBytes"] = task["bytesRead"] if "pegasus" in data["wms"]["name"] else task["bytesRead"] * 1000
+        if "bytesWritten" in task:
+            task["writtenBytes"] = task["bytesWritten"] if "pegasus" in data["wms"]["name"] else task["bytesWritten"] * 1000
+        if "memory" in task:
+            task["memoryInBytes"] = task["memory"] * 1000
+
+        for file in task["files"]:
+            file["sizeInBytes"] = file["size"]
+            file.pop("size", None)
 
     return data
 
