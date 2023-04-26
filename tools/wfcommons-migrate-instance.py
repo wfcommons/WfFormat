@@ -144,8 +144,9 @@ def _migrate_to_14(data):
     data["workflow"].pop("makespan", None)
     
     for machine in data["workflow"]["machines"]:
-        machine["memoryInBytes"] = machine["memory"] * 1000
-        machine.pop("memory", None)
+        if "memory" in machine:
+            machine["memoryInBytes"] = machine["memory"] * 1000
+            machine.pop("memory", None)
 
     for task in data["workflow"]["tasks"]:
         task["runtimeInSeconds"] = task["runtime"]
