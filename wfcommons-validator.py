@@ -102,7 +102,7 @@ def _semantic_validation(data):
     for j in data['workflow']['tasks']:
         for p in j['parents']:
             if p not in task_ids:
-                logger.error(f"Parent task '{p['parentId']}' is not declared in the list of workflow tasks.")
+                logger.error(f"Parent task '{p}' is not declared in the list of workflow tasks.")
                 has_error = True
 
     logger.debug('The workflow has %d tasks.' % len(task_ids))
