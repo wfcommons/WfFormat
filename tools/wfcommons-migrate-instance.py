@@ -20,7 +20,8 @@ SUPPORTED_VERSIONS = [
     "1.0",
     "1.1",
     "1.2",
-    "1.3"
+    "1.3",
+    "1.4"
 ]
 LATEST_VERSION = "1.4"
 
@@ -66,6 +67,10 @@ def _process_instance(instance_file, schema_version):
     if data["schemaVersion"] == "1.3":
         logger.debug(f"Migration to version 1.4: {instance_file}")
         data = _migrate_to_14(data)
+
+    if data["schemaVersion"] == LATEST_VERSION:
+        logger.debug(f"Cleaning up: {instance_file}")
+        data = _cleanup(data)
 
     # write output file
     with open(instance_file, "w") as outfile:
@@ -165,6 +170,36 @@ def _migrate_to_14(data):
 
     return data
 
+def _cleanup(data):
+    """
+    Cleanup instances from old format.
+    :param data: instance data dictionary
+    :return: instance data dictionary in the migrated form
+    """
+
+    if "makespan" in data["workflow"] and "makespanInSeconds" in data["workflow"]:
+        data["workflow"].pop("makespan", None)
+    
+    for machine in data["workflow"]["machines"]:
+        if "memory" in machine and "memoryInBytes" in machine:
+            machine.pop("memory", None)
+
+    for task in data["workflow"]["tasks"]:
+        if "runtime" in task and "runtimeInSeconds" in task:
+            task.pop("runtime", None)
+
+        if "bytesRead" in task:
+            task["readBytes"] = task["bytesRead"] if "pegasus" in data["wms"]["name"] else task["bytesRead"] * 1000
+        if "bytesWritten" in task:
+            task["writtenBytes"] = task["bytesWritten"] if "pegasus" in data["wms"]["name"] else task["bytesWritten"] * 1000
+        if "memory" in task and "memoryInBytes" in task:
+            task.pop("memory")
+
+        for file in task["files"]:
+            if "size" in file and "sizeInBytes" in file:
+                file.pop("size", None)
+
+    return data
 
 def main():
     # Application's arguments
