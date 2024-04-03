@@ -166,29 +166,29 @@
                   "children"
                 ]
               }
-            }
-          },
-          "files": {
-            "description": "List of input/output data",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "description": "Unique file ID",
-                  "type": "string",
-                  "minLength": 1
+            },
+            "files": {
+              "description": "List of input/output data",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "description": "Unique file ID",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sizeInBytes": {
+                    "description": "File size in bytes",
+                    "type": "integer",
+                    "minimum": 0
+                  }
                 },
-                "sizeInBytes": {
-                  "description": "File size in bytes",
-                  "type": "integer",
-                  "minimum": 0
-                }
-              },
-              "required": [
-                "id",
-                "sizeInBytes"
-              ]
+                "required": [
+                  "id",
+                  "sizeInBytes"
+                ]
+              }
             }
           },
           "required": [
