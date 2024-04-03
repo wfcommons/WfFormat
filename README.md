@@ -42,7 +42,7 @@ The workflow property is the **core** element of the instance file. It contains 
 
 ### Specification Property
 
-- [x] `tasks`: Sets of workflow tasks.
+- [x] `tasks`: List of workflow tasks.
 
 #### Tasks Property (Specification)
 
@@ -52,14 +52,14 @@ This property lists all tasks of the workflow describing their relationships and
 - [x] `id`: Task unique ID (e.g., ID0000001).
 - [x] `parents`: List of parent tasks (reference to other workflow tasks by their `id`).
 - [x] `children`: List of children tasks (reference to other workflow tasks by their `id`).
-- [ ] `files`: Sets of input/output data files.
+- [ ] `files`: List of input/output data files.
 
 ### Execution Property
 
 - [x] `makespanInSeconds`: Workflow overall execution time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
-- [x] `tasks`: Sets of workflow tasks.
-- [ ] `machines`: Sets of compute machines used for running the workflow tasks.
+- [x] `tasks`: List of workflow tasks.
+- [ ] `machines`: List of compute machines used for running the workflow tasks.
 
 #### Tasks Property (Execution)
 
@@ -68,13 +68,13 @@ This property lists all tasks of the workflow describing their characteristics a
 - [x] `id`: Task unique ID (e.g., ID0000001).
 - [x] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `command`: Task command description.
-- [ ] `cores`: Number of cores required by the task (e.g., `1.5`).
+- [ ] `coreCount`: Number of cores required by the task (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `readBytes`: Total bytes read.
 - [ ] `writtenBytes`: Total bytes written.
 - [ ] `memoryInBytes`: Memory (resident set) size of the process in bytes.
-- [ ] `energy`: Total energy consumption in kWh.
-- [ ] `avgPower`: Average power consumption in W.
+- [ ] `energyInKWh`: Total energy consumption in kWh.
+- [ ] `avgPowerInW`: Average power consumption in W.
 - [ ] `priority`: Task priority as an _integer_ value.
 - [ ] `machine`: Node name of machine on which the task was run.
 
@@ -104,7 +104,7 @@ The machines property lists all different machines that were used for workflow t
 - [ ] `memoryInBytes`: Total RAM memory in bytes.
 - [ ] `cpu`: An `object` to describe the machine's CPU information.
 
-The **`cpu`** property is composed of a `count` (number of CPU cores - supports fractions of cores expressed as float numbers), `speed` (CPU speed in MHz), and `vendor` (CPU vendor) properties.
+The **`cpu`** property is composed of a `coreCount` (number of CPU cores - supports fractions of cores expressed as float numbers), `speedInMHz` (CPU speed in MHz), and `vendor` (CPU vendor) properties.
 
 ## Author Property
 
