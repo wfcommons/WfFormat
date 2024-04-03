@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2021-2023 The WfCommons Team.
+# Copyright (c) 2021-2024 The WfCommons Team.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,9 +21,10 @@ SUPPORTED_VERSIONS = [
     "1.1",
     "1.2",
     "1.3",
-    "1.4"
+    "1.4",
+    "1.5"
 ]
-LATEST_VERSION = "1.4"
+LATEST_VERSION = "1.5"
 
 
 def _configure_logging(debug):
@@ -68,9 +69,11 @@ def _process_instance(instance_file, schema_version):
         logger.debug(f"Migration to version 1.4: {instance_file}")
         data = _migrate_to_14(data)
 
-    if data["schemaVersion"] == LATEST_VERSION:
+    if data["schemaVersion"] == "1.4":
         logger.debug(f"Cleaning up: {instance_file}")
         data = _cleanup(data)
+        logger.debug(f"Migration to version 1.5: {instance_file}")
+        data = _migrate_to_15(data)
 
     # write output file
     with open(instance_file, "w") as outfile:
@@ -139,7 +142,7 @@ def _migrate_to_13(data):
 
 def _migrate_to_14(data):
     """
-    Migrate instance data from version 1.2 to 1.3.
+    Migrate instance data from version 1.3 to 1.4.
     :param data: instance data dictionary
     :return: instance data dictionary in the migrated form
     """
@@ -169,6 +172,97 @@ def _migrate_to_14(data):
             file.pop("size", None)
 
     return data
+
+def _migrate_to_15(data):
+    """
+    Migrate instance data from version 1.4 to 1.5.
+    :param data: instance data dictionary
+    :return: instance data dictionary in the migrated form
+    """
+    data["schemaVersion"] = "1.5"
+    files_map = {}
+    children_map = {}
+
+    _update_data(data, "wms", data, "runtimeSystem")
+
+    if "machines" in data["workflow"]:
+        for machine in data["workflow"]["machines"]:
+            _update_data(machine["cpu"], "count", machine["cpu"], "coreCount")
+            _update_data(machine["cpu"], "speed", machine["cpu"], "speedInMHz")
+
+    data["workflow"]["specification"] = {
+        "tasks": [],
+        "files": []
+    }
+    data["workflow"]["execution"] = {
+        "makespanInSeconds": data["workflow"]["makespanInSeconds"],
+        "executedAt": data["workflow"]["executedAt"],
+        "tasks": []
+    }
+
+    _update_data(data["workflow"], "machines", data["workflow"]["execution"], "machines")
+
+    for task in data["workflow"]["tasks"]:
+        task_id = task["name"] if task["id"] in task["name"] else f"{task["name"]}_{task["id"]}"
+        st = {
+            "name": task["name"],
+            "id": task_id,
+            "children": [],
+            "inputFiles": [],
+            "outputFiles": []
+        }
+        
+        # identify children tasks
+        for parent in task["parents"]:
+            if parent not in children_map:
+                children_map[parent] = []
+            children_map[parent].append(task_id)
+        _update_data(task, "parents", st, "parents")
+
+        # migrate files
+        for file in task["files"]:
+            if file["name"] not in files_map:
+                data["workflow"]["specification"]["files"].append({
+                    "id": file["name"],
+                    "sizeInBytes": file["sizeInBytes"]
+                })
+            if file["link"].lower() == "input":
+                st["inputFiles"].append(file["name"])
+            else:
+                st["outputFiles"].append(file["name"])
+
+        data["workflow"]["specification"]["tasks"].append(st)
+
+        et = {
+            "id": task_id,
+            "runtimeInSeconds": task["runtimeInSeconds"],
+        }
+        _update_data(task, "command", et, "command")
+        _update_data(task, "cores", et, "coreCount")
+        _update_data(task, "avgCPU", et, "avgCPU")
+        _update_data(task, "readBytes", et, "readBytes")
+        _update_data(task, "writtenBytes", et, "writtenBytes")
+        _update_data(task, "memoryInBytes", et, "memoryInBytes")
+        _update_data(task, "energy", et, "energyInKWh")
+        _update_data(task, "avgPower", et, "avgPowerInW")
+        _update_data(task, "priority", et, "priority")
+        _update_data(task, "machine", et, "machine")
+        data["workflow"]["execution"]["tasks"].append(et)
+
+    data["workflow"].pop("tasks")
+    data["workflow"].pop("makespanInSeconds")
+    data["workflow"].pop("executedAt")
+
+    for task in data["workflow"]["specification"]["tasks"]:
+        if task["id"] in children_map:
+            task["children"] = children_map[task["id"]]
+
+    return data
+
+def _update_data(src, src_key, dst, dst_key):
+    if src_key in src:
+        dst[dst_key] = src[src_key]
+        src.pop(src_key)
 
 def _cleanup(data):
     """

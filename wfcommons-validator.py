@@ -92,14 +92,14 @@ def _semantic_validation(data):
         logger.debug('Skipping machines processing.')
 
     task_ids = []
-    for j in data['workflow']['tasks']:
+    for j in data['workflow']['specification']['tasks']:
         task_ids.append(j['name'])
         if 'machine' in j and j['machine'] not in machine_ids:
             logger.error(f"Machine '{j['machine']}' is not declared in the list of machines.")
             has_error = True
 
     # since tasks may be declared out of order, their dependencies are only verified here
-    for j in data['workflow']['tasks']:
+    for j in data['workflow']['specification']['tasks']:
         for p in j['parents']:
             if p not in task_ids:
                 logger.error(f"Parent task '{p}' is not declared in the list of workflow tasks.")

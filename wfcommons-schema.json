@@ -128,34 +128,20 @@
                     "description": "List of input data",
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "description": "Unique file ID",
-                          "type": "string",
-                          "minLength": 1
-                        }
-                      },
-                      "required": [
-                        "id"
-                      ]
+                      "type": "string",
+                      "description": "Unique file ID",
+                      "minLength": 1,
+                      "pattern": "^[0-9a-zA-Z-_.]*$"
                     }
                   },
                   "outputFiles": {
                     "description": "List of output data",
                     "type": "array",
                     "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "description": "Unique file ID",
-                          "type": "string",
-                          "minLength": 1
-                        }
-                      },
-                      "required": [
-                        "id"
-                      ]
+                      "type": "string",
+                      "description": "Unique file ID",
+                      "minLength": 1,
+                      "pattern": "^[0-9a-zA-Z-_.]*$"
                     }
                   }
                 },
@@ -243,7 +229,7 @@
                       }
                     }
                   },
-                  "coresCount": {
+                  "coreCount": {
                     "description": "Number of cores required by the task",
                     "type": "number",
                     "minimum": 1
