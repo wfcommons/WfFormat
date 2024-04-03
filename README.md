@@ -48,17 +48,15 @@ The workflow property is the **core** element of the instance file. It contains 
 
 This property lists all tasks of the workflow describing their relationships and file dependencies. Each task is described as an `object` property and is composed of 8 properties:
 
-- [x] `name`: Arbitrary task name.
+- [x] `name`: Task name (often set to the name of the program executed by a task or to some notion of task type or category).
 - [x] `id`: Task unique ID (e.g., ID0000001).
-- [ ] `category`: Task category (can be used, for example, to define tasks that use the same program).
-- [x] `type`: Task type (whether it is a `compute`, `transfer`, or an `auxiliary` task).
-- [x] `parents`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
-- [x] `children`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
-- [ ] `files`: Sets of input/output data.
+- [x] `parents`: List of parent tasks (reference to other workflow tasks by their `id`).
+- [x] `children`: List of children tasks (reference to other workflow tasks by their `id`).
+- [ ] `files`: Sets of input/output data files.
 
 ### Execution Property
 
-- [x] `makespanInSeconds`: Workflow turnaround time in _seconds_.
+- [x] `makespanInSeconds`: Workflow overall execution time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
 - [x] `tasks`: Sets of workflow tasks.
 - [ ] `machines`: Sets of compute machines used for running the workflow tasks.
@@ -68,8 +66,8 @@ This property lists all tasks of the workflow describing their relationships and
 This property lists all tasks of the workflow describing their characteristics and performance metrics. Each task is described as an `object` property and is composed of 11 properties:
 
 - [x] `id`: Task unique ID (e.g., ID0000001).
+- [x] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `command`: Task command description.
-- [ ] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `cores`: Number of cores required by the task (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `readBytes`: Total bytes read.
