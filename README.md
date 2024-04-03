@@ -21,17 +21,17 @@ This documentation provides an overview of the WfCommons JSON schema. Although t
 - [ ] `description`: A concise description of the instance. It should aid researchers to understand the purpose of the execution.
 - [ ] `createdAt`: Schema creation date in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-03-20T15:19:28-08:00`).
 - [x] `schemaVersion`: Version of the schema from an enumerate.
-- [ ] `wms`: An `object` to describe the workflow management system (WMS) used to run the workflow.
+- [ ] `runtimeSystem: An `object` to describe the runtime system used to execute the workflow.
 - [x] `workflow`: An `object` to describe the workflow characteristics and performance metrics.
 - [ ] `author`: An `object` to describe the author/institution who created/generated the instance.
 
-## WMS Property
+## Runtime System Property
 
-The workflow management system property documents the WMS used to run the workflow. It is composed of the following sub-properties:
+The `runtimeSystem` property documents the runtime system used to run the workflow. It has the following sub-properties:
 
-- [x] `name`: WMS name.
-- [x] `version`: WMS version.
-- [ ] `url`: URL for the main WMS website.
+- [x] `name`: runtime system name.
+- [x] `version`: runtime system version.
+- [ ] `url`: URL for the main runtime system website.
 
 ## Workflow Property
 
@@ -43,16 +43,26 @@ The workflow property is the **core** element of the instance file. It contains 
 ### Specification Property
 
 - [x] `tasks`: List of workflow tasks.
+- [ ] `files`: List of workflow files.
 
 #### Tasks Property (Specification)
 
-This property lists all tasks of the workflow describing their relationships and file dependencies. Each task is described as an `object` property and is composed of 8 properties:
+This property lists all tasks of the workflow describing their relationships and file dependencies. Each task is described as an `object` with 5 properties:
 
 - [x] `name`: Task name (often set to the name of the program executed by a task or to some notion of task type or category).
-- [x] `id`: Task unique ID (e.g., ID0000001).
+- [x] `id`: Unique task ID (e.g., ID0000001).
 - [x] `parents`: List of parent tasks (reference to other workflow tasks by their `id`).
 - [x] `children`: List of children tasks (reference to other workflow tasks by their `id`).
-- [ ] `files`: List of input/output data files.
+- [ ] `inputFiles`: List of the input file IDs
+- [ ] `outputFiles`: List of output file IDs
+
+#### File Property (Specification)
+
+This property lists all data files in the workflow that are used as input/output by tasks. Each file is described as an `object` with 2 properties:
+
+- [x] `id`: Unique file ID (e.g., a file name, a path, an arbitrary string)
+- [x] `sizeInBytes`: File size in bytes
+
 
 ### Execution Property
 
@@ -68,7 +78,7 @@ This property lists all tasks of the workflow describing their characteristics a
 - [x] `id`: Task unique ID (e.g., ID0000001).
 - [x] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `command`: Task command description.
-- [ ] `coreCount`: Number of cores required by the task (e.g., `1.5`).
+- [ ] `coreCount`: Number of cores required by the task, possibly fractional (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `readBytes`: Total bytes read.
 - [ ] `writtenBytes`: Total bytes written.
