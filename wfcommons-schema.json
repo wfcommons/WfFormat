@@ -26,21 +26,21 @@
         "1.5"
       ]
     },
-    "wms": {
+    "runtimeSystem": {
       "type": "object",
       "properties": {
         "name": {
-          "description": "WMS name",
+          "description": "Runtime system name",
           "type": "string",
           "minLength": 1
         },
         "version": {
-          "description": "WMS version",
+          "description": "Runtime system version",
           "type": "string",
           "minLength": 1
         },
         "url": {
-          "description": "WMS url",
+          "description": "Runtime system url",
           "type": "string",
           "minLength": 1,
           "format": "uri"
@@ -88,7 +88,7 @@
           "type": "object",
           "properties": {
             "tasks": {
-              "description": "Sets of workflow tasks",
+              "description": "List of workflow tasks",
               "type": "array",
               "minItems": 1,
               "items": {
@@ -104,22 +104,8 @@
                     "type": "string",
                     "minLength": 1
                   },
-                  "category": {
-                    "description": "Task category",
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "type": {
-                    "description": "Task type (whether it is a compute, an auxiliary, or a data transfer task)",
-                    "type": "string",
-                    "enum": [
-                      "compute",
-                      "transfer",
-                      "auxiliary"
-                    ]
-                  },
                   "parents": {
-                    "description": "Sets of parent tasks",
+                    "description": "List of parent tasks",
                     "type": "array",
                     "items": {
                       "type": "string",
@@ -129,7 +115,7 @@
                     }
                   },
                   "children": {
-                    "description": "Sets of children tasks",
+                    "description": "List of children tasks",
                     "type": "array",
                     "items": {
                       "type": "string",
@@ -138,35 +124,37 @@
                       "pattern": "^[0-9a-zA-Z-_.]*$"
                     }
                   },
-                  "files": {
-                    "description": "Sets of input/output data",
+                  "inputFiles": {
+                    "description": "List of input data",
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "name": {
-                          "description": "A human-readable name for the file",
+                        "id": {
+                          "description": "Unique file ID",
                           "type": "string",
                           "minLength": 1
-                        },
-                        "sizeInBytes": {
-                          "description": "File size in bytes",
-                          "type": "integer",
-                          "minimum": 0
-                        },
-                        "link": {
-                          "description": "Whether it is an input or output data",
-                          "type": "string",
-                          "enum": [
-                            "input",
-                            "output"
-                          ]
                         }
                       },
                       "required": [
-                        "name",
-                        "sizeInBytes",
-                        "link"
+                        "id"
+                      ]
+                    }
+                  },
+                  "outputFiles": {
+                    "description": "List of output data",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "description": "Unique file ID",
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id"
                       ]
                     }
                   }
@@ -174,11 +162,33 @@
                 "required": [
                   "name",
                   "id",
-                  "type",
                   "parents",
                   "children"
                 ]
               }
+            }
+          },
+          "files": {
+            "description": "List of input/output data",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Unique file ID",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sizeInBytes": {
+                  "description": "File size in bytes",
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "id",
+                "sizeInBytes"
+              ]
             }
           },
           "required": [
@@ -198,7 +208,7 @@
               "minLength": 1
             },
             "tasks": {
-              "description": "Sets of workflow tasks",
+              "description": "List of workflow tasks",
               "type": "array",
               "minItems": 1,
               "items": {
@@ -208,6 +218,10 @@
                     "description": "Unique task ID",
                     "type": "string",
                     "minLength": 1
+                  },
+                  "runtimeInSeconds": {
+                    "description": "Task runtime in seconds",
+                    "type": "number"
                   },
                   "command": {
                     "description": "Task command description",
@@ -219,7 +233,7 @@
                         "minLength": 1
                       },
                       "arguments": {
-                        "description": "Sets of task arguments",
+                        "description": "List of task arguments",
                         "type": "array",
                         "items": {
                           "description": "A task argument",
@@ -229,11 +243,7 @@
                       }
                     }
                   },
-                  "runtimeInSeconds": {
-                    "description": "Task runtime in seconds",
-                    "type": "number"
-                  },
-                  "cores": {
+                  "coresCount": {
                     "description": "Number of cores required by the task",
                     "type": "number",
                     "minimum": 1
@@ -254,11 +264,11 @@
                     "description": "Memory (resident set) size of the process in bytes",
                     "type": "number"
                   },
-                  "energy": {
+                  "energyInKWh": {
                     "description": "Total energy consumption in kWh",
                     "type": "number"
                   },
-                  "avgPower": {
+                  "avgPowerInW": {
                     "description": "Average power consumption in W",
                     "type": "number"
                   },
@@ -273,12 +283,13 @@
                   }
                 },
                 "required": [
-                  "id"
+                  "id",
+                  "runtimeInSeconds"
                 ]
               }
             },
             "machines": {
-              "description": "Sets of machines used for workflow tasks",
+              "description": "List of machines used for workflow tasks",
               "type": "array",
               "minItems": 1,
               "items": {
@@ -319,12 +330,12 @@
                     "description": "Machine's CPU information",
                     "type": "object",
                     "properties": {
-                      "count": {
+                      "coreCount": {
                         "description": "Number of CPU cores",
                         "type": "integer",
                         "minimum": 1
                       },
-                      "speed": {
+                      "speedInMHz": {
                         "description": "CPU speed in MHz",
                         "type": "integer",
                         "minimum": 1
