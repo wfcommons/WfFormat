@@ -56,13 +56,12 @@ This property lists all tasks of the workflow describing their relationships and
 - [ ] `inputFiles`: List of the input file IDs
 - [ ] `outputFiles`: List of output file IDs
 
-#### File Property (Specification)
+#### Files Property (Specification)
 
 This property lists all data files in the workflow that are used as input/output by tasks. Each file is described as an `object` with 2 properties:
 
 - [x] `id`: Unique file ID (e.g., a file name, a path, an arbitrary string)
 - [x] `sizeInBytes`: File size in bytes
-
 
 ### Execution Property
 
@@ -88,22 +87,14 @@ This property lists all tasks of the workflow describing their characteristics a
 - [ ] `priority`: Task priority as an _integer_ value.
 - [ ] `machine`: Node name of machine on which the task was run.
 
-##### Command Property
+##### Command Property (Execution)
 
 The command property describes the program and arguments used by a task. The `command` is listed as an `object` property, and is composed of the following properties:
 
 - [ ] `program`: Program name.
 - [ ] `arguments`: List of task arguments.
 
-##### Files Property
-
-The files property lists all files used throughout the workflow execution. Each `file` is listed as an `object` property, and is composed of the following properties:
-
-- [x] `name`: A human-readable _unique_ name for the file.
-- [x] `sizeInBytes`: File size in bytes.
-- [x] `link`: Whether it is an `input` or `output` data.
-
-##### Machines Property
+#### Machines Property (Execution)
 
 The machines property lists all different machines that were used for workflow tasks execution. It is composed of the following properties:
 
