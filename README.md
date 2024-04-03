@@ -5,7 +5,7 @@
 
 # WfFormat: The WfCommons JSON Schema
 
-- Current schema version: `1.4`
+- Current schema version: `1.5`
 - Schema file: `wfcommons-schema.json`
 - Schema validator: `wfcommons-validator.py` (see documentation at the end of this file)
 
@@ -37,22 +37,38 @@ The workflow management system property documents the WMS used to run the workfl
 
 The workflow property is the **core** element of the instance file. It contains the workflow structure (tasks, depenencies, and files), as well as task characteristics and performance information. It is composed by the following sub-properties:
 
+- [x] `specification`: Workflow specification (does not contain any execution information).
+- [ ] `execution`: Workflow execution information.
+
+### Specification Property
+
+- [x] `tasks`: Sets of workflow tasks.
+
+#### Tasks Property (Specification)
+
+This property lists all tasks of the workflow describing their relationships and file dependencies. Each task is described as an `object` property and is composed of 8 properties:
+
+- [x] `name`: Arbitrary task name.
+- [x] `id`: Task unique ID (e.g., ID0000001).
+- [ ] `category`: Task category (can be used, for example, to define tasks that use the same program).
+- [x] `type`: Task type (whether it is a `compute`, `transfer`, or an `auxiliary` task).
+- [x] `parents`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
+- [x] `children`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
+- [ ] `files`: Sets of input/output data.
+
+### Execution Property
+
 - [x] `makespanInSeconds`: Workflow turnaround time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
 - [x] `tasks`: Sets of workflow tasks.
 - [ ] `machines`: Sets of compute machines used for running the workflow tasks.
 
-### Tasks Property
+#### Tasks Property (Execution)
 
-This property lists all tasks of the workflow describing their characteristics and performance metrics. Each task is described as an `object` property and is composed of 15 properties:
+This property lists all tasks of the workflow describing their characteristics and performance metrics. Each task is described as an `object` property and is composed of 11 properties:
 
-- [x] `name`: Full task ID or name (to be used as references in child/parent tasks).
-- [ ] `id`: Task unique ID (e.g., ID0000001).
-- [ ] `category`: Task category (can be used, for example, to define tasks that use the same program).
-- [x] `type`: Task type (whether it is a `compute`, `transfer`, or an `auxiliary` task).
+- [x] `id`: Task unique ID (e.g., ID0000001).
 - [ ] `command`: Task command description.
-- [ ] `parents`: List of parent tasks (reference to other workflow tasks, i.e. `name` property above).
-- [ ] `files`: Sets of input/output data.
 - [ ] `runtimeInSeconds`: Task runtime in _seconds_.
 - [ ] `cores`: Number of cores required by the task (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
@@ -64,14 +80,14 @@ This property lists all tasks of the workflow describing their characteristics a
 - [ ] `priority`: Task priority as an _integer_ value.
 - [ ] `machine`: Node name of machine on which the task was run.
 
-#### Command Property
+##### Command Property
 
 The command property describes the program and arguments used by a task. The `command` is listed as an `object` property, and is composed of the following properties:
 
 - [ ] `program`: Program name.
 - [ ] `arguments`: List of task arguments.
 
-#### Files Property
+##### Files Property
 
 The files property lists all files used throughout the workflow execution. Each `file` is listed as an `object` property, and is composed of the following properties:
 
@@ -79,7 +95,7 @@ The files property lists all files used throughout the workflow execution. Each 
 - [x] `sizeInBytes`: File size in bytes.
 - [x] `link`: Whether it is an `input` or `output` data.
 
-#### Machines Property
+##### Machines Property
 
 The machines property lists all different machines that were used for workflow tasks execution. It is composed of the following properties:
 
