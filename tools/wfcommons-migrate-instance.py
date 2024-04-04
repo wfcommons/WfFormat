@@ -204,7 +204,7 @@ def _migrate_to_15(data):
     _update_data(data["workflow"], "machines", data["workflow"]["execution"], "machines")
 
     for task in data["workflow"]["tasks"]:
-        task_id = task["name"] if task["id"] in task["name"] else f"{task["name"]}_{task["id"]}"
+        task_id = task["name"] if task["id"] in task["name"] else f"{task['name']}_{task['id']}"
         st = {
             "name": task["name"],
             "id": task_id,
