@@ -93,7 +93,7 @@ def _semantic_validation(data):
 
     task_ids = []
     for j in data['workflow']['specification']['tasks']:
-        task_ids.append(j['name'])
+        task_ids.append(j['id'])
         if 'machine' in j and j['machine'] not in machine_ids:
             logger.error(f"Machine '{j['machine']}' is not declared in the list of machines.")
             has_error = True

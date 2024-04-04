@@ -182,6 +182,7 @@ def _migrate_to_15(data):
     data["schemaVersion"] = "1.5"
     files_map = {}
     children_map = {}
+    tasks_map = {}
 
     _update_data(data, "wms", data, "runtimeSystem")
 
@@ -211,6 +212,7 @@ def _migrate_to_15(data):
             "inputFiles": [],
             "outputFiles": []
         }
+        tasks_map[task_id] = st
         
         # identify children tasks
         for parent in task["parents"]:
@@ -222,6 +224,7 @@ def _migrate_to_15(data):
         # migrate files
         for file in task["files"]:
             if file["name"] not in files_map:
+                files_map[file["name"]] = None
                 data["workflow"]["specification"]["files"].append({
                     "id": file["name"],
                     "sizeInBytes": file["sizeInBytes"]
@@ -229,6 +232,8 @@ def _migrate_to_15(data):
             if file["link"].lower() == "input":
                 st["inputFiles"].append(file["name"])
             else:
+                if not files_map[file["name"]]:
+                    files_map[file["name"]] = task_id
                 st["outputFiles"].append(file["name"])
 
         data["workflow"]["specification"]["tasks"].append(st)
@@ -254,8 +259,17 @@ def _migrate_to_15(data):
     data["workflow"].pop("executedAt")
 
     for task in data["workflow"]["specification"]["tasks"]:
+        # children tasks
         if task["id"] in children_map:
             task["children"] = children_map[task["id"]]
+        
+        # in case there are no children and no parents
+        if not task["parents"]:
+            for file in task["inputFiles"]:
+                task_name = files_map[file]
+                if task_name and task_name not in task["parents"]:
+                    task["parents"].append(task_name)
+                    tasks_map[task_name]["children"].append(task["id"])
 
     return data
 
