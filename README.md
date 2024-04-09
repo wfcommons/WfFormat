@@ -21,13 +21,13 @@ This documentation provides an overview of the WfCommons JSON schema. Although t
 - [ ] `description`: A concise description of the instance. It should aid researchers to understand the purpose of the execution.
 - [ ] `createdAt`: Schema creation date in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-03-20T15:19:28-08:00`).
 - [x] `schemaVersion`: Version of the schema from an enumerate.
-- [ ] `runtimeSystem: An `object` to describe the runtime system used to execute the workflow.
-- [x] `workflow`: An `object` to describe the workflow characteristics and performance metrics.
-- [ ] `author`: An `object` to describe the author/institution who created/generated the instance.
+- [ ] [`runtimeSystem`](#runtime-system-property): An `object` to describe the runtime system used to execute the workflow.
+- [x] [`workflow`](#workflow-property): An `object` to describe the workflow characteristics and performance metrics.
+- [ ] [`author`](#author-property): An `object` to describe the author/institution who created/generated the instance.
 
 ## Runtime System Property
 
-The `runtimeSystem` property documents the runtime system used to run the workflow. It has the following sub-properties:
+The **`runtimeSystem`** property documents the runtime system used to run the workflow. It has the following sub-properties:
 
 - [x] `name`: runtime system name.
 - [x] `version`: runtime system version.
@@ -35,15 +35,15 @@ The `runtimeSystem` property documents the runtime system used to run the workfl
 
 ## Workflow Property
 
-The workflow property is the **core** element of the instance file. It contains the workflow structure (tasks, depenencies, and files), as well as task characteristics and performance information. It is composed by the following sub-properties:
+The **`workflow`*** property is the **core** element of the instance file. It contains the workflow structure (tasks, depenencies, and files), as well as task characteristics and performance information. It is composed by the following sub-properties:
 
-- [x] `specification`: Workflow specification (does not contain any execution information).
-- [ ] `execution`: Workflow execution information.
+- [x] [`specification`](#specification-property): Workflow specification (does not contain any execution information).
+- [ ] [`execution`](#execution-property): Workflow execution information.
 
 ### Specification Property
 
-- [x] `tasks`: List of workflow tasks.
-- [ ] `files`: List of workflow files.
+- [x] [`tasks`](#tasks-property-specification): List of workflow tasks.
+- [ ] [`files`](#files-property-specification): List of workflow files.
 
 #### Tasks Property (Specification)
 
@@ -68,7 +68,7 @@ This property lists all data files in the workflow that are used as input/output
 - [x] `makespanInSeconds`: Workflow overall execution time in _seconds_.
 - [x] `executedAt`: Workflow start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
 - [x] `tasks`: List of workflow tasks.
-- [ ] `machines`: List of compute machines used for running the workflow tasks.
+- [ ] [`machines`](#machines-property-execution): List of compute machines used for running the workflow tasks.
 
 #### Tasks Property (Execution)
 
@@ -76,7 +76,7 @@ This property lists all tasks of the workflow describing their characteristics a
 
 - [x] `id`: Task unique ID (e.g., ID0000001).
 - [x] `runtimeInSeconds`: Task runtime in _seconds_.
-- [ ] `command`: Task command description.
+- [ ] [`command`](#command-property-execution): An `object` to describe the task’s command.
 - [ ] `coreCount`: Number of cores required by the task, possibly fractional (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).
 - [ ] `readBytes`: Total bytes read.
@@ -89,27 +89,33 @@ This property lists all tasks of the workflow describing their characteristics a
 
 ##### Command Property (Execution)
 
-The command property describes the program and arguments used by a task. The `command` is listed as an `object` property, and is composed of the following properties:
+The **`command`** property describes the program and arguments used by a task. It is composed of the following properties:
 
 - [ ] `program`: Program name.
 - [ ] `arguments`: List of task arguments.
 
 #### Machines Property (Execution)
 
-The machines property lists all different machines that were used for workflow tasks execution. It is composed of the following properties:
+The **`machines`** property lists all different machines that were used for workflow tasks execution. It is composed of the following properties:
 
 - [ ] `system`: Machine system (`linux`, `macos`, `windows`).
 - [ ] `architecture`: Machine architecture (e.g., `x86_64`).
 - [x] `nodeName`: Machine node name.
 - [ ] `release`: Machine release.
 - [ ] `memoryInBytes`: Total RAM memory in bytes.
-- [ ] `cpu`: An `object` to describe the machine's CPU information.
+- [ ] [`cpu`](#cpu-property-execution): An `object` to describe the machine's CPU information.
 
-The **`cpu`** property is composed of a `coreCount` (number of CPU cores - supports fractions of cores expressed as float numbers), `speedInMHz` (CPU speed in MHz), and `vendor` (CPU vendor) properties.
+##### CPU Property (Execution)
+
+The **`cpu`** property describes the used  CPUs. It has the following sub-properties:
+
+- [ ] `coreCount`: Number of CPU cores - supports fractions of cores expressed as float numbers.
+- [ ] `speedInMHz`: CPU speed in MHz.
+- [ ] `vendor`: CPU vendor.
 
 ## Author Property
 
-The author property should contain the contact information about the person or team who created the instance. It is composed of the following properties:
+The **`author`** property should contain the contact information about the person or team who created the instance. It is composed of the following properties:
 
 - [x] `name`: Author name.
 - [x] `email`: Author email.
