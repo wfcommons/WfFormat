@@ -203,8 +203,13 @@ def _migrate_to_15(data):
 
     _update_data(data["workflow"], "machines", data["workflow"]["execution"], "machines")
 
+    task_count = -1
     for task in data["workflow"]["tasks"]:
-        task_id = task["name"] if task["id"] in task["name"] else f"{task['name']}_{task['id']}"
+        task_count += 1
+        if "id" in task:
+            task_id = task["name"] if task["id"] in task["name"] else f"{task['name']}_{task['id']}"
+        else:
+            task_id = task["name"] + "_" + str(task_count)
         st = {
             "name": task["name"],
             "id": task_id,
@@ -331,7 +336,7 @@ def main():
                     _process_instance(os.path.join(root, f), LATEST_VERSION)
                     counter += 1
     else:
-        _process_instance(args.instance, args.schema_version)
+        _process_instance(args.instance, LATEST_VERSION)
         counter = 1
 
     logger.info(f"Successfully migrated {counter} instance file(s).")
