@@ -228,18 +228,22 @@ def _migrate_to_15(data):
 
         # migrate files
         for file in task["files"]:
-            if file["name"] not in files_map:
-                files_map[file["name"]] = None
+            file_name = file["name"]
+            if "path" in file:
+                file_name = file["path"] + file_name
+
+            if file_name not in files_map:
+                files_map[file_name] = None
                 data["workflow"]["specification"]["files"].append({
-                    "id": file["name"],
+                    "id": file_name,
                     "sizeInBytes": file["sizeInBytes"]
                 })
             if file["link"].lower() == "input":
-                st["inputFiles"].append(file["name"])
+                st["inputFiles"].append(file_name)
             else:
-                if not files_map[file["name"]]:
-                    files_map[file["name"]] = task_id
-                st["outputFiles"].append(file["name"])
+                if not files_map[file_name]:
+                    files_map[file_name] = task_id
+                st["outputFiles"].append(file_name)
 
         data["workflow"]["specification"]["tasks"].append(st)
 
