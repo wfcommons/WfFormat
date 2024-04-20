@@ -249,7 +249,7 @@ def _migrate_to_15(data):
 
         et = {
             "id": task_id,
-            "runtimeInSeconds": task["runtimeInSeconds"],
+            "runtimeInSeconds": task["runtimeInSeconds"]
         }
         _update_data(task, "command", et, "command")
         _update_data(task, "cores", et, "coreCount")
@@ -260,7 +260,8 @@ def _migrate_to_15(data):
         _update_data(task, "energy", et, "energyInKWh")
         _update_data(task, "avgPower", et, "avgPowerInW")
         _update_data(task, "priority", et, "priority")
-        _update_data(task, "machine", et, "machine")
+        if "machine" in task:
+            et["machines"] = [task["machine"]]
         data["workflow"]["execution"]["tasks"].append(et)
 
     data["workflow"].pop("tasks")

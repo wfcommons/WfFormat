@@ -263,10 +263,14 @@
                     "description": "Task priority",
                     "type": "number"
                   },
-                  "machine": {
-                    "description": "Machine name used",
-                    "type": "string",
-                    "minLength": 1
+                  "machines": {
+                    "description": "List of machines used by the task",
+                    "type": "array",
+                        "items": {
+                          "description": "Machine name used",
+                          "type": "string",
+                          "minLength": 1
+                    }
                   }
                 },
                 "required": [
@@ -276,7 +280,7 @@
               }
             },
             "machines": {
-              "description": "List of machines used for workflow tasks",
+              "description": "List of machines used by tasks in the workflow",
               "type": "array",
               "minItems": 1,
               "items": {
