@@ -85,7 +85,7 @@ This property lists all tasks of the workflow describing their characteristics a
 - [ ] `energyInKWh`: Total energy consumption in kWh.
 - [ ] `avgPowerInW`: Average power consumption in W.
 - [ ] `priority`: Task priority as an _integer_ value.
-- [ ] `machine`: Node name of machine on which the task was run.
+- [ ] `machines`: List of node names of machines on which the task executed.
 
 ##### Command Property (Execution)
 
