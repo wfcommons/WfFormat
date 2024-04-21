@@ -53,7 +53,7 @@ def _load_schema(schema_file):
             return json.loads(open(schema_path).read())
         else:
             # fetching latest schema file from GitHub repository
-            url = "https://raw.githubusercontent.com/wfcommons/workflow-schema/master/wfcommons-schema.json"
+            url = "https://raw.githubusercontent.com/wfcommons/wfformat/master/wfcommons-schema.json"
             response = requests.get(url)
             logger.debug("Using latest schema file from GitHub repository.")
             return json.loads(response.content)

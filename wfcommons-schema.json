@@ -131,7 +131,7 @@
                       "type": "string",
                       "description": "Unique file ID",
                       "minLength": 1,
-                      "pattern": "^[0-9a-zA-Z-_./]*$"
+                      "pattern": "^[0-9a-zA-Z-_./:]*$"
                     }
                   },
                   "outputFiles": {
@@ -141,7 +141,7 @@
                       "type": "string",
                       "description": "Unique file ID",
                       "minLength": 1,
-                      "pattern": "^[0-9a-zA-Z-_./]*$"
+                      "pattern": "^[0-9a-zA-Z-_./:]*$"
                     }
                   }
                 },
@@ -162,7 +162,7 @@
                   "id": {
                     "description": "Unique file ID",
                     "type": "string",
-                    "pattern": "^[0-9a-zA-Z-_./]*$",
+                    "pattern": "^[0-9a-zA-Z-_./:]*$",
                     "minLength": 1
                   },
                   "sizeInBytes": {
