@@ -85,8 +85,8 @@ def _semantic_validation(data):
     has_error = False
 
     machine_ids = []
-    if 'machines' in data['workflow']:
-        for m in data['workflow']['machines']:
+    if 'machines' in data['workflow']['execution']:
+        for m in data['workflow']['execution']['machines']:
             machine_ids.append(m['nodeName'])
     else:
         logger.debug('Skipping machines processing.')
