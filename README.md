@@ -76,6 +76,7 @@ This property lists all tasks of the workflow describing their characteristics a
 
 - [x] `id`: Task unique ID (e.g., ID0000001).
 - [x] `runtimeInSeconds`: Task runtime in _seconds_.
+- [ ] `executedAt`: Task start timestamp in the [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601) format (e.g., `2020-04-01T15:10:53-08:00`).
 - [ ] [`command`](#command-property-execution): An `object` to describe the task’s command.
 - [ ] `coreCount`: Number of cores required by the task, possibly fractional (e.g., `1.5`).
 - [ ] `avgCPU`: Average CPU utilization in % (e.g, `93.78`).

@@ -210,6 +210,11 @@
                     "description": "Task runtime in seconds",
                     "type": "number"
                   },
+                  "executedAt": {
+                    "description": "Task start execution timestamp",
+                    "type": "string",
+                    "minLength": 1
+                  },
                   "command": {
                     "description": "Task command description",
                     "type": "object",
