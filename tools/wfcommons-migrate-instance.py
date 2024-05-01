@@ -219,12 +219,19 @@ def _migrate_to_15(data):
         }
         tasks_map[task_id] = st
         
-        # identify children tasks
+        # identify parent tasks (if any)
         for parent in task["parents"]:
             if parent not in children_map:
                 children_map[parent] = []
             children_map[parent].append(task_id)
         _update_data(task, "parents", st, "parents")
+
+        # identify children tasks (if any)
+        for child in task["children"]:
+            if task_id not in children_map:
+                children_map[task_id] = []
+            children_map[task_id].append(child)
+        _update_data(task, "children", st, "children")
 
         # migrate files
         for file in task["files"]:
