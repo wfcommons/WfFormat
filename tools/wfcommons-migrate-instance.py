@@ -184,6 +184,9 @@ def _migrate_to_15(data):
     children_map = {}
     tasks_map = {}
 
+    # list of auxiliary task names
+    auxiliary_tasks = []
+
     _update_data(data, "wms", data, "runtimeSystem")
 
     if "machines" in data["workflow"]:
@@ -218,7 +221,7 @@ def _migrate_to_15(data):
             "outputFiles": []
         }
         tasks_map[task_id] = st
-        
+
         # identify parent tasks (if any)
         for parent in task["parents"]:
             if parent not in children_map:
@@ -232,6 +235,24 @@ def _migrate_to_15(data):
                 children_map[task_id] = []
             children_map[task_id].append(child)
         _update_data(task, "children", st, "children")
+
+        # If this is an auxiliary task, then we don't add it but record its existence
+        # and propagate upward and downward dependencies
+        if task["type"] == "auxiliary":
+            # Using the name.... not sure if it should be the ID, but it seems to work
+            auxiliary_tasks.append(task["name"])
+            if len(task["files"]) > 0:
+                # This should not happen
+                raise Exception("CANNOT DEAL WITH AN AUXILIARY TASK THAT HAS FILES")
+            # Propagate dependencies
+            if "parents" in task:
+                for parent in task["parents"]:
+                    if "children" in task:
+                        for child in task["children"]:
+                            children_map[parent].append(child)
+            # Don't add this task and move on
+            continue
+
 
         # migrate files
         for file in task["files"]:
@@ -287,6 +308,15 @@ def _migrate_to_15(data):
                 if task_name and task_name not in task["parents"]:
                     task["parents"].append(task_name)
                     tasks_map[task_name]["children"].append(task["id"])
+
+        # Remove all auxiliary tasks from parent/children lists (terrible complexity)
+        for auxiliary_task in auxiliary_tasks:
+            if auxiliary_task in task["children"]:
+                task["children"].remove(auxiliary_task)
+            if auxiliary_task in task["parents"]:
+                task["parents"].remove(auxiliary_task)
+
+
 
     return data
 
