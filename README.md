@@ -1,5 +1,5 @@
-[![DOI](https://zenodo.org/badge/252368853.svg)](https://zenodo.org/badge/latestdoi/252368853)
-
+[![DOI](https://zenodo.org/badge/252368853.svg)](https://zenodo.org/badge/latestdoi/252368853)&nbsp;&nbsp;
+[![GitHub Release](https://img.shields.io/github/release/wfcommons/wfformat/all.svg)](https://github.com/wfcommons/wfformat/releases)
 
 <a href="https://wfcommons.org" target="_blank"><img src="https://wfcommons.org/images/wfcommons-horizontal.png" width="350" /></a>
 
