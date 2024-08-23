@@ -335,9 +335,10 @@ def _cleanup(data):
     if "makespan" in data["workflow"] and "makespanInSeconds" in data["workflow"]:
         data["workflow"].pop("makespan", None)
     
-    for machine in data["workflow"]["machines"]:
-        if "memory" in machine and "memoryInBytes" in machine:
-            machine.pop("memory", None)
+    if "machines" in data["workflow"]:
+        for machine in data["workflow"]["machines"]:
+            if "memory" in machine and "memoryInBytes" in machine:
+                machine.pop("memory", None)
 
     for task in data["workflow"]["tasks"]:
         if "runtime" in task and "runtimeInSeconds" in task:
