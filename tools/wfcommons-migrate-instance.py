@@ -11,6 +11,7 @@ import argparse
 import json
 import logging
 import os
+import sys
 
 __author__ = "Rafael Ferreira da Silva"
 
@@ -345,6 +346,9 @@ def main():
     if os.path.isdir(args.instance):
         for root, dirs, files in os.walk(args.instance):
             for f in files:
+                if counter != 0 and counter % int(len(files)/10) == 0:
+                    sys.stderr.write(".")
+                    sys.stderr.flush()
                 if f.endswith(".json"):
                     _process_instance(os.path.join(root, f), LATEST_VERSION)
                     counter += 1
@@ -352,6 +356,7 @@ def main():
         _process_instance(args.instance, LATEST_VERSION)
         counter = 1
 
+    sys.stderr.write("\n")
     logger.info(f"Successfully migrated {counter} instance file(s).")
 
 
