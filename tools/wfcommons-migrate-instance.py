@@ -346,7 +346,7 @@ def main():
     if os.path.isdir(args.instance):
         for root, dirs, files in os.walk(args.instance):
             for f in files:
-                if counter != 0 and counter % int(len(files)/10) == 0:
+                if counter != 0 and counter % int(1 + len(files)/10) == 0:
                     sys.stderr.write(".")
                     sys.stderr.flush()
                 if f.endswith(".json"):
