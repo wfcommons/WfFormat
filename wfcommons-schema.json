@@ -1,7 +1,14 @@
 {
-  "$schema": "http://json-schema.org/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "title": "WfFormat",
+  "$defs": {
+    "taskId": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[0-9a-zA-Z_.#:/-]+$"
+    }
+  },
   "properties": {
     "name": {
       "description": "Workflow instance name",
@@ -101,27 +108,22 @@
                   },
                   "id": {
                     "description": "Unique task ID",
-                    "type": "string",
-                    "minLength": 1
+                    "$ref": "#/$defs/taskId"
                   },
                   "parents": {
                     "description": "List of parent tasks",
                     "type": "array",
                     "items": {
-                      "type": "string",
                       "description": "ID of the parent task",
-                      "minLength": 0,
-                      "pattern": "^[0-9a-zA-Z-_.#:/]*$"
+                      "$ref": "#/$defs/taskId"
                     }
                   },
                   "children": {
                     "description": "List of children tasks",
                     "type": "array",
                     "items": {
-                      "type": "string",
                       "description": "ID of the child task",
-                      "minLength": 0,
-                      "pattern": "^[0-9a-zA-Z-_.#:/]*$"
+                      "$ref": "#/$defs/taskId"
                     }
                   },
                   "inputFiles": {
@@ -176,6 +178,41 @@
                   "sizeInBytes"
                 ]
               }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "numberOfTasks": {
+                  "description": "Number of tasks in the workflow",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "numberOfFiles": {
+                  "description": "Number of files in the workflow",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sumOfFileSizesInBytes": {
+                  "description": "Sum of the sizes of all files in bytes",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "numberOfLevels": {
+                  "description": "Number of levels in the workflow DAG",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimumWidth": {
+                  "description": "Minimum width (parallelism) over the levels in the workflow DAG",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "maximumWidth": {
+                  "description": "Maximum width (parallelism) over the levels in the workflow DAG",
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
             }
           },
           "required": [
@@ -192,6 +229,7 @@
             "executedAt": {
               "description": "Workflow start execution timestamp",
               "type": "string",
+              "format": "date-time",
               "minLength": 1
             },
             "tasks": {
@@ -203,8 +241,7 @@
                 "properties": {
                   "id": {
                     "description": "Unique task ID",
-                    "type": "string",
-                    "minLength": 1
+                    "$ref": "#/$defs/taskId"
                   },
                   "runtimeInSeconds": {
                     "description": "Task runtime in seconds",
@@ -213,6 +250,7 @@
                   "executedAt": {
                     "description": "Task start execution timestamp",
                     "type": "string",
+                    "format": "date-time",
                     "minLength": 1
                   },
                   "command": {
@@ -271,10 +309,10 @@
                   "machines": {
                     "description": "List of machines used by the task",
                     "type": "array",
-                        "items": {
-                          "description": "Machine name used",
-                          "type": "string",
-                          "minLength": 1
+                    "items": {
+                      "description": "Machine name used",
+                      "type": "string",
+                      "minLength": 1
                     }
                   }
                 },
@@ -347,6 +385,26 @@
                 "required": [
                   "nodeName"
                 ]
+              }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "sumTaskRuntimesInSeconds": {
+                  "description": "The sum of task runtimes (a measure of total work)",
+                  "type": "number",
+                  "minimum": 0
+                },
+                "totalNumBytesRead": {
+                  "description": "The total number of bytes read in by tasks",
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "totalNumBytesWritten": {
+                  "description": "The total number of bytes written out by tasks",
+                  "type": "integer",
+                  "minimum": 0
+                }
               }
             }
           },
