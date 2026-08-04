@@ -23,9 +23,10 @@ SUPPORTED_VERSIONS = [
     "1.2",
     "1.3",
     "1.4",
-    "1.5"
+    "1.5",
+    "1.6"
 ]
-LATEST_VERSION = "1.5"
+LATEST_VERSION = "1.6"
 
 
 def _configure_logging(debug):
@@ -291,10 +292,22 @@ def _migrate_to_15(data):
 
     return data
 
+def _migrate_to_16(data):
+    """
+    Migrate instance data from version 1.5 to 1.6.
+    :param data: instance data dictionary
+    :return: instance data dictionary in the migrated form
+    """
+    # Nothing to do here, as all new additions are optional items (the "metrics")
+    # or small fixes to the schema itself
+    data["schemaVersion"] = "1.6"
+    return data
+
 def _update_data(src, src_key, dst, dst_key):
     if src_key in src:
         dst[dst_key] = src[src_key]
         src.pop(src_key)
+
 
 def _cleanup(data):
     """

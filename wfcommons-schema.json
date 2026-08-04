@@ -30,7 +30,7 @@
       "description": "Version of the schema used",
       "type": "string",
       "enum": [
-        "1.5"
+        "1.6"
       ]
     },
     "runtimeSystem": {
