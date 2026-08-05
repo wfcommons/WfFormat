@@ -77,6 +77,11 @@ def _process_instance(instance_file, schema_version):
         logger.debug(f"Migration to version 1.5: {instance_file}")
         data = _migrate_to_15(data)
 
+    if data["schemaVersion"] == "1.5":
+        logger.debug(f"Migration to version 1.6: {instance_file}")
+        data = _migrate_to_16(data)
+
+
     # write output file
     with open(instance_file, "w") as outfile:
         logger.debug(f"Writing migrated instance to: {instance_file}")
