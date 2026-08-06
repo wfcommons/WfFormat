@@ -286,7 +286,7 @@ A minimal but complete instance exercising both the specification and execution 
 
 | Script | Purpose |
 | --- | --- |
-| [`wfcommons-validator.py`](wfcommons-validator.py) | Validate an instance against the schema (syntax) and check cross-references (semantics). |
+| [`wfcommons-validator.py`](wfcommons-validator.py) | Validate instances against the schema (syntax) and check cross-references, graph structure, and metrics (semantics). |
 | [`tools/wfcommons-migrate-instance.py`](tools/wfcommons-migrate-instance.py) | Migrate instance files from WfFormat 1.0–1.5 to 1.6. |
 | [`tools/wfcommons-add-metrics-to-instance.py`](tools/wfcommons-add-metrics-to-instance.py) | Compute and add the optional `metrics` objects introduced in 1.6. |
 
@@ -295,45 +295,63 @@ A minimal but complete instance exercising both the specification and execution 
 WfCommons provides a Python-based instance validator script for verifying the
 syntax of JSON instance files, as well as their semantics.
 
-**Prerequisite:** The validator script requires the Python's `jsonschema` and
-`requests` modules, which can be installed as follows:
+**Prerequisite:** The validator script requires the Python's `jsonschema`
+module, which can be installed as follows:
 
 ```
 $ pip install jsonschema
-$ pip install requests
 ```
+
+Two optional installs extend what is checked: `pip install "jsonschema[format]"`
+enables the `date-time`, `uri`, and `hostname` format checks (formats without an
+installed checker are silently skipped), and `pip install requests` is needed
+only when the schema has to be downloaded (see below).
 
 The validator script signature is defined as follows:
 
 ```
-usage: wfcommons-validator.py [-h] [-s SCHEMA_FILE] [-d] JSON_FILE
+usage: wfcommons-validator.py [-h] [-s SCHEMA_FILE] [--strict] [-d]
+                              JSON_FILE [JSON_FILE ...]
 
 Validate JSON file against wfcommons-schema.
 
 positional arguments:
-  JSON_FILE       JSON instance file
+  JSON_FILE       JSON instance file, or folder with instance files
 
 options:
   -h, --help      show this help message and exit
   -s SCHEMA_FILE  JSON schema file
+  --strict        Treat warnings as errors
   -d, --debug     Print debug messages to stderr
 ```
 
 The schema is resolved in this order: the file given with `-s`, then
 `wfcommons-schema.json` sitting next to the script, and finally the latest
-schema fetched from the WfFormat GitHub repository. The script exits with
-status `1` and logs one message per problem when validation fails.
+schema fetched from the WfFormat GitHub repository. Several files and folders
+may be given at once, in which case each is validated independently and a
+summary is printed. The script logs one message per problem and exits with
+status `1` if any error was reported.
 
-Beyond the schema check, the semantic pass verifies that every task ID listed in
-a `parents` array is declared in the list of workflow tasks. A few caveats are
-worth knowing:
+Problems are reported as **errors**, which make validation fail, or as
+**warnings**, which do not (unless `--strict` is given). Beyond the schema
+check, the semantic pass reports:
 
-- Semantic validation currently requires a `workflow.execution` section; a
-  specification-only instance (valid per the schema) raises a `KeyError`.
-- `children` entries, `inputFiles`/`outputFiles` references, and the task IDs
-  used in the execution section are not cross-checked.
-- `format` annotations in the schema (`date-time`, `email`, `uri`, `hostname`)
-  are not enforced, so a malformed timestamp passes validation.
+| Check | Level |
+| --- | --- |
+| Task, file, and machine identifiers are unique | error |
+| `parents` and `children` refer to declared tasks, and no task depends on itself | error |
+| `inputFiles`/`outputFiles` refer to declared files | error |
+| Execution tasks refer to tasks declared in the specification | error |
+| A task's `machines` refer to declared machines | error |
+| The workflow graph is acyclic | error |
+| Declared [`metrics`](#metrics-property-specification) agree with the instance data | error |
+| `parents` and `children` describe the same set of edges | warning |
+| A file is declared but used by no task, or a task has no execution entry | warning |
+| A dependency or file is declared more than once | warning |
+| A `format` annotation is violated (e.g., a malformed timestamp) | warning |
+
+Semantic validation is skipped for an instance that already has schema errors,
+since the structure it relies on cannot be trusted.
 
 ### Migration
 
@@ -343,13 +361,22 @@ sequence. It accepts either a single JSON file or a directory, which it walks
 recursively, migrating every `.json` file it finds.
 
 ```
-usage: wfcommons-migrate-instance.py [-h] [-d] INSTANCE_FILE_OR_FOLDER
+usage: wfcommons-migrate-instance.py [-h] [-n] [-b] [-d] INSTANCE_FILE_OR_FOLDER
+
+  -n, --dry-run   Report what would be migrated without writing any file
+  -b, --backup    Keep the original instance as <INSTANCE_FILE>.bak
+  -d, --debug     Print debug messages to stderr
 ```
 
 **Instance files are rewritten in place** (pretty-printed with a 4-space
-indent), so work on a copy or a clean checkout. Files whose `schemaVersion` is
-unrecognized are skipped with a warning; files that are not WfFormat instances
-at all will raise an error rather than being ignored.
+indent); use `--dry-run` to preview a run and `--backup` to keep the originals.
+Instances already at version 1.6 are left untouched rather than reformatted.
+
+When given a folder, every `.json` file is processed independently: files that
+are not WfFormat instances, and files whose `schemaVersion` is unrecognized, are
+skipped with a message, and a file that cannot be read or migrated is reported
+without interrupting the run. The final summary counts each outcome, and the
+exit status is non-zero if any file failed.
 
 ### Metrics
 

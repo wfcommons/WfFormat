@@ -7,9 +7,11 @@ usage notes and known limitations.
 
 Script to migrate an instance file from an older WfFormat version (1.0 through
 1.5) to the current version, applying each intermediate migration step in
-sequence. Accepts a single JSON file or a folder, which is walked recursively.
-**Instance files are rewritten in place.** Invoke without command-line arguments
-to see usage.
+sequence. Accepts a single JSON file or a folder, which is walked recursively;
+files that are not WfFormat instances are skipped, and a file that fails to
+migrate does not interrupt the run. **Instance files are rewritten in place**,
+unless `--dry-run` is given; `--backup` keeps the originals. Invoke without
+command-line arguments to see usage.
 
 
 ### wfcommons-add-metrics-to-instance.py
