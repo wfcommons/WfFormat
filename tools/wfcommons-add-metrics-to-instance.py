@@ -56,33 +56,7 @@ def add_specification_metrics(data):
     sum_file_sizes = sum([f["sizeInBytes"] for f in data["workflow"]["specification"]["files"]])
     data["workflow"]["specification"]["metrics"]["sumOfFileSizesInBytes"] = sum_file_sizes
 
-    # Calculate graph metrics
-    # Build graph of tasks
-    graph, top_level_nodes = Graph(), set()
-    for task in data["workflow"]["specification"]['tasks']:
-     if len(task['parents']) == 0:
-         top_level_nodes.add(task['id'])
-     for child in task['children']:
-         graph.add_edge(task['id'], child)
-
-    # Calculate levels and depth
-    depth, levels = 0, defaultdict(int)
-    for node in top_level_nodes:
-     queue = deque([node])
-     while queue:
-         task = queue.popleft()
-         for child_node in graph.adj_dict[task]:
-             levels[child_node] = max(1 + levels[task], levels[child_node])
-             queue.append(child_node)
-             depth = max(depth, levels[child_node])
-    depth += 1
-
-    # Calculate min and max width from levels
-    counter = Counter()
-    for level in levels.values():
-     counter[level] += 1
-    most_common = counter.most_common()
-    min_width, max_width = most_common[-1][1], most_common[0][1]
+    depth, min_width, max_width = compute_graph_metrics(data["workflow"]["specification"]["tasks"])
 
     data["workflow"]["specification"]["metrics"]["numberOfLevels"] = depth
     data["workflow"]["specification"]["metrics"]["minimumWidth"] = min_width
@@ -129,6 +103,109 @@ def add_execution_metrics(data):
 
     return data
 
+from collections import deque
+
+
+def compute_graph_metrics(tasks):
+    """
+    Compute workflow DAG level metrics.
+
+    A root is at level 0. Every other task is at one plus the
+    maximum level of any of its parents.
+
+    Returns:
+        tuple:
+            number_of_levels,
+            minimum_level_width,
+            maximum_level_width
+    """
+    number_of_tasks = len(tasks)
+
+    # Explicit behavior for an empty workflow.
+    if number_of_tasks == 0:
+        return 0, 0, 0
+
+    # Mapping IDs to integer indices lets the frequently updated state
+    # below use compact Python lists rather than dictionaries keyed by
+    # task-ID strings.
+    id_to_index = {}
+
+    for index, task in enumerate(tasks):
+        task_id = task["id"]
+
+        if task_id in id_to_index:
+            raise ValueError(f"Duplicate task ID: {task_id!r}")
+
+        id_to_index[task_id] = index
+
+    # This assumes the parents and children declarations agree, as they
+    # should in a valid WfFormat instance.
+    remaining_parents = [
+        len(task["parents"])
+        for task in tasks
+    ]
+
+    ready = deque(
+        index
+        for index, parent_count in enumerate(remaining_parents)
+        if parent_count == 0
+    )
+
+    level_widths = []
+    number_processed = 0
+
+    while ready:
+        # Tasks currently in the queue constitute exactly one level.
+        level_width = len(ready)
+        level_widths.append(level_width)
+
+        # Fix the iteration count so that children made ready during
+        # this iteration are processed as part of the next level.
+        for _ in range(level_width):
+            task_index = ready.popleft()
+            task = tasks[task_index]
+            number_processed += 1
+
+            for child_id in task["children"]:
+                try:
+                    child_index = id_to_index[child_id]
+                except KeyError as exc:
+                    raise ValueError(
+                        f"Task {task['id']!r} references unknown "
+                        f"child task {child_id!r}"
+                    ) from exc
+
+                remaining_parents[child_index] -= 1
+
+                if remaining_parents[child_index] == 0:
+                    ready.append(child_index)
+                elif remaining_parents[child_index] < 0:
+                    raise ValueError(
+                        "Inconsistent parent/child declarations or "
+                        f"duplicate edge ending at task {child_id!r}"
+                    )
+
+    if number_processed != number_of_tasks:
+        unresolved = [
+            tasks[index]["id"]
+            for index, parent_count in enumerate(remaining_parents)
+            if parent_count > 0
+        ]
+
+        preview = ", ".join(repr(task_id) for task_id in unresolved[:5])
+
+        raise ValueError(
+            "The workflow graph contains a cycle or has inconsistent "
+            f"parent/child declarations; {len(unresolved)} tasks were "
+            f"not processed"
+            + (f" ({preview})" if preview else "")
+        )
+
+    return (
+        len(level_widths),
+        min(level_widths),
+        max(level_widths),
+    )
 
 def main():
     if len(sys.argv) < 2:
